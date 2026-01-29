@@ -9,12 +9,21 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.2.0",
+    "@types/node": "^25.1.0",
+    "biome": "^0.3.3",
+    "dotenv": "^17.2.3",
     "prettier": "^3.7.4",
+    "prisma": "^7.3.0",
     "turbo": "^2.8.0",
     "typescript": "5.9.2"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "dependencies": {
+    "@prisma/client": "^7.3.0",
+    "zod": "^4.3.6"
   }
 }
