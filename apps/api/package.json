@@ -11,7 +11,9 @@
     "start:dev": "nest start --watch",
     "prisma:generate": "pnpm prisma generate",
     "prisma:deploy": "pnpm prisma migrate deploy",
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts",
+    "test": "jest",
+    "test:integration": "cross-env NODE_ENV=test dotenv -e .env.test jest --testMatch '**/*.spec.ts'"
   },
   "dependencies": {
     "@anatine/zod-nestjs": "^2.0.12",
@@ -47,6 +49,8 @@
     "@types/node": "^22.10.7",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
+    "cross-env": "^10.1.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -70,7 +74,10 @@
       "ts"
     ],
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testMatch": [
+      "**/*.test.ts",
+      "**/*.spec.ts"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -78,6 +85,9 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "setupFiles": [
+      "<rootDir>/test/jest.setup.ts"
+    ]
   }
 }

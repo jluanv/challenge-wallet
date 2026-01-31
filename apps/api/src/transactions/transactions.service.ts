@@ -2,8 +2,8 @@ import { Injectable } from "@nestjs/common";
 import {
   BadRequestError,
   NotFoundError,
-} from "common/exceptions/http-exception.util";
-import { PrismaService } from "prisma/prisma.service";
+} from "../common/exceptions/http-exception.util";
+import { PrismaService } from "../prisma/prisma.service";
 import { DepositDto } from "./dto/deposit.dto";
 import { ReverseDto } from "./dto/reverse.dto";
 import { TransferDto } from "./dto/transfer.dto";

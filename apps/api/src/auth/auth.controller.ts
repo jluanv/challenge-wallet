@@ -8,7 +8,7 @@ import {
   UsePipes,
 } from "@nestjs/common";
 import { ApiBody, ApiResponse, ApiTags } from "@nestjs/swagger";
-import { ZodValidationPipe } from "common/pipes/zod-validation.pipe";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 
