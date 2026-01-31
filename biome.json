@@ -7,7 +7,13 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!node_modules", "!.next", "!dist", "!build"]
+    "includes": [
+      "**",
+      "!node_modules",
+      "!.next",
+      "!dist",
+      "!build"
+    ]
   },
   "formatter": {
     "enabled": true,
@@ -15,6 +21,9 @@
     "indentWidth": 2
   },
   "linter": {
+    "includes": [
+      "apps/web/src/**/*.tsx"
+    ],
     "enabled": true,
     "rules": {
       "recommended": true,
@@ -32,6 +41,11 @@
       "source": {
         "organizeImports": "on"
       }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
     }
   }
 }
