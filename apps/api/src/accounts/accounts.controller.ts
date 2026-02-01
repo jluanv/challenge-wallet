@@ -2,7 +2,6 @@ import { createAccountInput, updateAccountInput } from "@finance/validations";
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Param,
   Patch,
@@ -67,10 +66,10 @@ export class AccountsController {
     return this.accountsService.update(id, req.user.userId, dto);
   }
 
-  @Delete(":id")
-  @ApiOperation({ summary: "Excluir uma conta" })
+  @Patch(":id/delete")
+  @ApiOperation({ summary: "Inativar uma conta" })
   @ApiParam({ name: "id", description: "ID da conta" })
-  @ApiResponse({ status: 200, description: "Conta excluída com sucesso" })
+  @ApiResponse({ status: 200, description: "Conta inativada com sucesso" })
   remove(@Req() req, @Param("id") id: string) {
     return this.accountsService.remove(id, req.user.userId);
   }

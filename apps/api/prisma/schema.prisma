@@ -25,6 +25,7 @@ model Account {
   balance     Float        @default(0)
   userId      String
   user        User         @relation(fields: [userId], references: [id])
+  isActive    Boolean      @default(true)
   transactions Transaction[]
 }
 

@@ -18,7 +18,7 @@ type UseHookFormStateProps<
 > = {
   action: (data: T) => Promise<FormState<TData>>;
   schema: Schema;
-  onSuccess?: () => Promise<void> | void;
+  onSuccess?: (data?: TData | null) => Promise<void> | void;
   resetForm?: () => void;
   defaultValues?: DefaultValues<input<Schema>>;
 };
@@ -48,7 +48,7 @@ export function useHookFormState<
 
       if (state.success) {
         toast.success(state.message || "Ação realizada com sucesso!");
-        await onSuccess?.();
+        await onSuccess?.(state.data);
         if (resetForm) resetForm();
       } else {
         toast.error(

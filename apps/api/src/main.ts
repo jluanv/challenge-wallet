@@ -8,6 +8,12 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
   app.useGlobalFilters(new AllExceptionsFilter());
 
+  app.enableCors({
+    origin: "http://localhost:3000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  });
+
   const config = new DocumentBuilder()
     .setTitle("Finance Wallet API")
     .setDescription("Documentação da API de autenticação e finanças")

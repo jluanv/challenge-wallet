@@ -32,6 +32,11 @@ export class AccountsService {
   }
 
   async remove(id: string, userId: string) {
-    return this.prisma.account.delete({ where: { id, userId } });
+    return this.prisma.account.update({
+      data: {
+        isActive: false,
+      },
+      where: { id, userId },
+    });
   }
 }

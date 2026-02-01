@@ -1,3 +1,4 @@
+import { ToastContainer } from "react-toastify";
 import { Sidebar } from "./components/sidebar";
 
 export default function ProtectedLayout({
@@ -17,6 +18,7 @@ export default function ProtectedLayout({
 
         {children}
       </div>
+      <ToastContainer />
     </div>
   );
 }
