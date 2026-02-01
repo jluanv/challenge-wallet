@@ -1,15 +1,21 @@
 import { Controller, Get, Req, UseGuards } from "@nestjs/common";
-import { ApiOperation, ApiResponse, ApiTags } from "@nestjs/swagger";
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { DashboardService } from "./dashboard.service";
 import { DashboardSummaryDto } from "./dto/dashboard-summary.dto";
 
 @ApiTags("Dashboard")
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller("dashboard")
 export class DashboardController {
   constructor(private readonly dashboardService: DashboardService) {}
 
-  @UseGuards(JwtAuthGuard)
   @Get("summary")
   @ApiOperation({ summary: "Resumo da dashboard do usuário" })
   @ApiResponse({

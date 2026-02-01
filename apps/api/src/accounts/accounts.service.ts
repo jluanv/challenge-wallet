@@ -17,7 +17,15 @@ export class AccountsService {
   }
 
   async findAll(userId: string) {
-    return this.prisma.account.findMany({ where: { userId } });
+    return this.prisma.account.findMany({
+      where: { userId },
+      orderBy: [
+        {
+          isActive: "desc",
+        },
+        { name: "asc" },
+      ],
+    });
   }
 
   async findOne(id: string, userId: string) {

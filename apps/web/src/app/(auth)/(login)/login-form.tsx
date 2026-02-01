@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useHookFormState } from "@/hooks/use-hook-form-state";
 import { privateRoutes } from "@/routes/routes";
 import { ControlledInput } from "@/shared-components/controlled-input";
+import { maskCpf } from "@/utils";
 import { loginAction } from "../actions/login";
 
 export function LoginForm() {
@@ -23,6 +24,7 @@ export function LoginForm() {
         label="CPF"
         name="cpf"
         placeholder="999.999.999-99"
+        mask={maskCpf}
       />
       <ControlledInput
         control={form.control}

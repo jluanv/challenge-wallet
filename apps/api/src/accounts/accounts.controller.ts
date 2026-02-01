@@ -37,14 +37,14 @@ export class AccountsController {
   @ApiBody({ type: CreateAccountDto })
   @ApiResponse({ status: 201, description: "Conta criada com sucesso" })
   create(@Req() req, @Body() dto: CreateAccountDto) {
-    return this.accountsService.create(req.user.userId, dto);
+    return this.accountsService.create(req.user.id, dto);
   }
 
   @Get()
   @ApiOperation({ summary: "Listar todas as contas do usuário" })
   @ApiResponse({ status: 200, description: "Lista de contas retornada" })
   findAll(@Req() req) {
-    return this.accountsService.findAll(req.user.userId);
+    return this.accountsService.findAll(req.user.id);
   }
 
   @Get(":id")
@@ -53,7 +53,7 @@ export class AccountsController {
   @ApiResponse({ status: 200, description: "Conta encontrada" })
   @ApiResponse({ status: 404, description: "Conta não encontrada" })
   findOne(@Req() req, @Param("id") id: string) {
-    return this.accountsService.findOne(id, req.user.userId);
+    return this.accountsService.findOne(id, req.user.id);
   }
 
   @Patch(":id")
@@ -63,7 +63,7 @@ export class AccountsController {
   @ApiBody({ type: UpdateAccountDto })
   @ApiResponse({ status: 200, description: "Conta atualizada com sucesso" })
   update(@Req() req, @Param("id") id: string, @Body() dto: UpdateAccountDto) {
-    return this.accountsService.update(id, req.user.userId, dto);
+    return this.accountsService.update(id, req.user.id, dto);
   }
 
   @Patch(":id/delete")
@@ -71,6 +71,6 @@ export class AccountsController {
   @ApiParam({ name: "id", description: "ID da conta" })
   @ApiResponse({ status: 200, description: "Conta inativada com sucesso" })
   remove(@Req() req, @Param("id") id: string) {
-    return this.accountsService.remove(id, req.user.userId);
+    return this.accountsService.remove(id, req.user.id);
   }
 }

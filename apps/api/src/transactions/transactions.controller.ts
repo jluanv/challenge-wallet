@@ -21,7 +21,7 @@ import {
 } from "@nestjs/swagger";
 import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
-import { DepositDto } from "./dto/deposit.dto";
+import { DepositDto, DepositOutputDto } from "./dto/deposit.dto";
 import { ReverseDto } from "./dto/reverse.dto";
 import { TransferDto } from "./dto/transfer.dto";
 import { WithdrawDto } from "./dto/withdraw.dto";
@@ -38,9 +38,13 @@ export class TransactionsController {
   @UsePipes(new ZodValidationPipe(depositInput))
   @ApiOperation({ summary: "Depositar em uma conta" })
   @ApiBody({ type: DepositDto })
-  @ApiResponse({ status: 201, description: "Depósito realizado com sucesso" })
+  @ApiResponse({
+    status: 201,
+    description: "Depósito realizado com sucesso",
+    type: DepositOutputDto,
+  })
   deposit(@Req() req, @Body() dto: DepositDto) {
-    return this.transactionsService.deposit(req.user.userId, dto);
+    return this.transactionsService.deposit(req.user.id, dto);
   }
 
   @Post("withdraw")
@@ -49,7 +53,7 @@ export class TransactionsController {
   @ApiBody({ type: WithdrawDto })
   @ApiResponse({ status: 201, description: "Saque realizado com sucesso" })
   withdraw(@Req() req, @Body() dto: WithdrawDto) {
-    return this.transactionsService.withdraw(req.user.userId, dto);
+    return this.transactionsService.withdraw(req.user.id, dto);
   }
 
   @Post("transfer")
@@ -61,7 +65,7 @@ export class TransactionsController {
     description: "Transferência realizada com sucesso",
   })
   transfer(@Req() req, @Body() dto: TransferDto) {
-    return this.transactionsService.transfer(req.user.userId, dto);
+    return this.transactionsService.transfer(req.user.id, dto);
   }
 
   @Post("reverse")
@@ -70,6 +74,6 @@ export class TransactionsController {
   @ApiBody({ type: ReverseDto })
   @ApiResponse({ status: 201, description: "Transação revertida com sucesso" })
   reverse(@Req() req, @Body() dto: ReverseDto) {
-    return this.transactionsService.reverse(req.user.userId, dto);
+    return this.transactionsService.reverse(req.user.id, dto);
   }
 }

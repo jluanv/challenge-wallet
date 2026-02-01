@@ -7,10 +7,28 @@ export default async function DashboardPage() {
   return (
     <div className="w-full p-8">
       <div className="bg-indigo-600 text-white rounded-lg p-6 mb-8">
-        <h2 className="text-lg">Saldo total disponível</h2>
-        <p className="text-3xl font-bold">
-          {formatCurrency(summary.totalBalance)}
-        </p>
+        <h2 className="text-lg">Resumo Financeiro</h2>
+
+        <div className="mb-4">
+          <p className="text-sm opacity-80">Saldo total</p>
+          <p className="text-3xl font-bold">
+            {formatCurrency(summary.totalBalance)}
+          </p>
+        </div>
+
+        <div className="mb-2">
+          <p className="text-sm opacity-80">Limite de crédito</p>
+          <p className="text-xl font-semibold">
+            {formatCurrency(summary.creditLimit)}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm opacity-80">Limite disponível</p>
+          <p className="text-xl font-semibold">
+            {formatCurrency(summary.availableCredit)}
+          </p>
+        </div>
       </div>
 
       <section className="mb-8">

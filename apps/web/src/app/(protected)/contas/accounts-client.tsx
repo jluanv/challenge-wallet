@@ -2,12 +2,14 @@
 
 import type {
   CreateAccountOutput,
+  DepositOutput,
   ListAccountsOutput,
 } from "@finance/validations";
 import { useState } from "react";
 import { deleteAccountAction } from "../actions/delete-account";
 import AccountModal from "../components/accounts-modal";
 import ConfirmModal from "../components/confirm-action-modal";
+import DepositModal from "../components/deposit-modal";
 
 export default function AccountsClient({
   initialAccounts,
@@ -15,10 +17,27 @@ export default function AccountsClient({
   const [accounts, setAccounts] = useState(initialAccounts);
   const [isOpen, setIsOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const [isDeposit, setIsDeposit] = useState(false);
   const [id, setId] = useState<string | null>(null);
 
   const handleAccountAdded = (newAcc: CreateAccountOutput) => {
     setAccounts((prev) => [...prev, newAcc]);
+  };
+
+  const handleDeposit = (deposit: DepositOutput) => {
+    setAccounts((prev) => {
+      const accountIndex = prev.findIndex(
+        (acc) => acc.id === deposit.accountId,
+      );
+      if (accountIndex === -1) return prev;
+      const updatedAccounts = [...prev];
+      const account = updatedAccounts[accountIndex];
+      updatedAccounts[accountIndex] = {
+        ...account,
+        balance: account.balance + deposit.amount,
+      };
+      return updatedAccounts;
+    });
   };
 
   const handleDeleteAccount = async (accountId: string) => {
@@ -54,24 +73,33 @@ export default function AccountsClient({
             key={acc.id}
             className={`bg-white shadow rounded-lg p-4 ${acc.isActive ? "" : "opacity-70"}`}
           >
-            <h2 className="text-indigo-600 font-semibold">{acc.name}</h2>
+            <h2 className="text-indigo-600 font-semibold">
+              {acc.name}
+              {!acc.isActive && (
+                <p className="text-xs text-red-500">(Inativa)</p>
+              )}
+            </h2>
             <p className="text-slate-700">Saldo: R$ {acc.balance}</p>
-            <div className="flex gap-2 mt-3">
-              {acc.balance > 0 ? (
+            <div className="flex gap-2 mt-3 flex-wrap">
+              {acc.balance > 0 && (
                 <button
                   type="button"
                   className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
                 >
                   Transferir
                 </button>
-              ) : (
-                <button
-                  type="button"
-                  className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
-                >
-                  Depositar
-                </button>
               )}
+              <button
+                type="button"
+                className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
+                onClick={() => {
+                  setId(acc.id);
+                  setIsDeposit(true);
+                }}
+              >
+                Depositar
+              </button>
+
               <button
                 type="button"
                 className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
@@ -111,6 +139,15 @@ export default function AccountsClient({
           onClose={() => setIsDelete(false)}
           onConfirm={() => handleDeleteAccount(id)}
           title="Deseja mesmo inativar esta conta?"
+        />
+      )}
+
+      {isDeposit && id && (
+        <DepositModal
+          isOpen={isDeposit}
+          accountId={id}
+          onClose={() => setIsDeposit(false)}
+          onDeposit={(data) => handleDeposit(data)}
         />
       )}
     </div>

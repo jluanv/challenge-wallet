@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { privateRoutes } from "@/routes/routes";
+import LogoutButton from "./logout-button";
 
 export function Sidebar() {
   return (
@@ -28,12 +29,7 @@ export function Sidebar() {
         </Link>
       </nav>
       <div className="p-4">
-        <button
-          className="w-full bg-red-600 py-2 rounded hover:bg-red-700"
-          type="button"
-        >
-          Sair
-        </button>
+        <LogoutButton />
       </div>
     </aside>
   );

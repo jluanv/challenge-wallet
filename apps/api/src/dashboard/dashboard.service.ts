@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { NotFoundError } from "../common/exceptions/http-exception.util";
 import { PrismaService } from "../prisma/prisma.service";
+import { transactionTypeTranslate } from "../utils/transaction-translate";
 import { DashboardSummaryDto } from "./dto/dashboard-summary.dto";
 
 @Injectable()
@@ -44,7 +45,7 @@ export class DashboardService {
       recentTransactions: recentTransactions.map((tx) => ({
         id: tx.id,
         date: tx.createdAt,
-        type: tx.type,
+        type: transactionTypeTranslate[tx.type],
         amount: tx.amount,
         accountId: tx.accountId,
       })),
