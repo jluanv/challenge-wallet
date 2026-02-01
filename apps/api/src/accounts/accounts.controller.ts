@@ -1,3 +1,4 @@
+import { createAccountInput, updateAccountInput } from "@finance/validations";
 import {
   Body,
   Controller,
@@ -8,6 +9,7 @@ import {
   Post,
   Req,
   UseGuards,
+  UsePipes,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -17,10 +19,11 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { AccountsService } from "./accounts.service";
 import { CreateAccountDto } from "./dto/create-account.dto";
 import { UpdateAccountDto } from "./dto/update-account.dto";
-import { JwtAuthGuard } from "./jwt-auth.guard";
 
 @ApiTags("accounts")
 @ApiBearerAuth()
@@ -30,6 +33,7 @@ export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
   @Post()
+  @UsePipes(new ZodValidationPipe(createAccountInput))
   @ApiOperation({ summary: "Criar uma nova conta" })
   @ApiBody({ type: CreateAccountDto })
   @ApiResponse({ status: 201, description: "Conta criada com sucesso" })
@@ -54,6 +58,7 @@ export class AccountsController {
   }
 
   @Patch(":id")
+  @UsePipes(new ZodValidationPipe(updateAccountInput))
   @ApiOperation({ summary: "Atualizar uma conta" })
   @ApiParam({ name: "id", description: "ID da conta" })
   @ApiBody({ type: UpdateAccountDto })

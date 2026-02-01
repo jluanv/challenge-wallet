@@ -1,4 +1,17 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  depositInput,
+  reverseInput,
+  transferInput,
+  withdrawInput,
+} from "@finance/validations";
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiBody,
@@ -6,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from "@nestjs/swagger";
-import { JwtAuthGuard } from "accounts/jwt-auth.guard";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
+import { ZodValidationPipe } from "../common/pipes/zod-validation.pipe";
 import { DepositDto } from "./dto/deposit.dto";
 import { ReverseDto } from "./dto/reverse.dto";
 import { TransferDto } from "./dto/transfer.dto";
@@ -21,6 +35,7 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post("deposit")
+  @UsePipes(new ZodValidationPipe(depositInput))
   @ApiOperation({ summary: "Depositar em uma conta" })
   @ApiBody({ type: DepositDto })
   @ApiResponse({ status: 201, description: "Depósito realizado com sucesso" })
@@ -29,6 +44,7 @@ export class TransactionsController {
   }
 
   @Post("withdraw")
+  @UsePipes(new ZodValidationPipe(withdrawInput))
   @ApiOperation({ summary: "Sacar de uma conta" })
   @ApiBody({ type: WithdrawDto })
   @ApiResponse({ status: 201, description: "Saque realizado com sucesso" })
@@ -37,6 +53,7 @@ export class TransactionsController {
   }
 
   @Post("transfer")
+  @UsePipes(new ZodValidationPipe(transferInput))
   @ApiOperation({ summary: "Transferir entre contas (internas ou externas)" })
   @ApiBody({ type: TransferDto })
   @ApiResponse({
@@ -48,6 +65,7 @@ export class TransactionsController {
   }
 
   @Post("reverse")
+  @UsePipes(new ZodValidationPipe(reverseInput))
   @ApiOperation({ summary: "Reverter uma transação" })
   @ApiBody({ type: ReverseDto })
   @ApiResponse({ status: 201, description: "Transação revertida com sucesso" })

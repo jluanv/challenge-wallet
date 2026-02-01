@@ -1,7 +1,8 @@
+import type { WithdrawInput } from "@finance/validations";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString, Min } from "class-validator";
 
-export class WithdrawDto {
+export class WithdrawDto implements WithdrawInput {
   @ApiProperty({ example: "account-uuid" })
   @IsString()
   accountId: string;

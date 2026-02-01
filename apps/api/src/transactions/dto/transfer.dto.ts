@@ -1,7 +1,8 @@
+import type { TransferInput } from "@finance/validations";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNumber, IsString, Min } from "class-validator";
 
-export class TransferDto {
+export class TransferDto implements TransferInput {
   @ApiProperty({ example: "from-account-uuid" })
   @IsString()
   fromAccountId: string;
