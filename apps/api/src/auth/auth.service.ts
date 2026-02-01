@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
-import { UsersService } from "user/users.service";
 import type { User } from "../../prisma/generated/client";
+import { UsersService } from "../user/users.service";
 @Injectable()
 export class AuthService {
   constructor(
