@@ -33,6 +33,12 @@ export class DashboardSummaryDto implements SummaryOutput {
   @ApiProperty()
   totalBalance: number;
 
+  @ApiProperty()
+  creditLimit: number;
+
+  @ApiProperty()
+  availableCredit: number;
+
   @ApiProperty({ type: [AccountSummaryDto] })
   accounts: AccountSummaryDto[];
 

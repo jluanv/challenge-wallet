@@ -43,12 +43,25 @@ export class TransactionsService {
       const account = await tx.account.findFirst({
         where: { id: dto.accountId, userId },
       });
-      if (!account) {
-        NotFoundError("Conta");
-      }
 
-      if (account.balance < dto.amount) {
-        BadRequestError("Saldo insuficiente");
+      if (!account) NotFoundError("Conta");
+
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        include: { accounts: true },
+      });
+
+      if (!user) NotFoundError("Usuário");
+
+      const totalBalance = user.accounts.reduce(
+        (sum, acc) => sum + acc.balance,
+        0,
+      );
+
+      const newTotalBalance = totalBalance - dto.amount;
+
+      if (newTotalBalance < -user.creditLimit) {
+        BadRequestError("Limite de crédito excedido");
       }
 
       const transaction = await tx.transaction.create({
@@ -79,7 +92,24 @@ export class TransactionsService {
       });
 
       if (!from || !to) NotFoundError("Conta");
-      if (from.balance < dto.amount) BadRequestError("Saldo insuficiente");
+
+      const user = await tx.user.findUnique({
+        where: { id: userId },
+        include: { accounts: true },
+      });
+
+      if (!user) NotFoundError("Usuário");
+
+      const totalBalance = user.accounts.reduce(
+        (sum, acc) => sum + acc.balance,
+        0,
+      );
+
+      const newTotalBalance = totalBalance - dto.amount;
+
+      if (newTotalBalance < -user.creditLimit) {
+        BadRequestError("Limite de crédito excedido");
+      }
 
       await tx.transaction.createMany({
         data: [

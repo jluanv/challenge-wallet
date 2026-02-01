@@ -2,6 +2,8 @@ import { z } from "zod";
 
 export const summaryOutput = z.object({
   totalBalance: z.number(),
+  creditLimit: z.number(),
+  availableCredit: z.number(),
   accounts: z.array(
     z.object({ id: z.string(), name: z.string(), balance: z.number() }),
   ),

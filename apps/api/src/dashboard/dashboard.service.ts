@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { NotFoundError } from "../common/exceptions/http-exception.util";
 import { PrismaService } from "../prisma/prisma.service";
 import { DashboardSummaryDto } from "./dto/dashboard-summary.dto";
 
@@ -7,6 +8,17 @@ export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getSummary(userId: string): Promise<DashboardSummaryDto> {
+    const user = await this.prisma.user.findUnique({
+      select: {
+        creditLimit: true,
+      },
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) throw NotFoundError("Usuário");
+
     const accounts = await this.prisma.account.findMany({
       where: { userId, isActive: true },
     });
@@ -21,6 +33,9 @@ export class DashboardService {
 
     return {
       totalBalance,
+      creditLimit: user.creditLimit,
+      availableCredit:
+        totalBalance < 0 ? user.creditLimit + totalBalance : user.creditLimit,
       accounts: accounts.map((acc) => ({
         id: acc.id,
         name: acc.name,
