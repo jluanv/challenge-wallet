@@ -1,34 +1,34 @@
 "use client";
 
-import { type DepositOutput, depositInput } from "@finance/validations";
+import { type WithdrawOutput, withdrawInput } from "@finance/validations";
 import { Loader2Icon } from "lucide-react";
 import z from "zod";
 import { useHookFormState } from "@/hooks/use-hook-form-state";
 import { ControlledInput } from "@/shared-components/controlled-input";
 import Modal from "@/shared-components/modal";
-import { depositAction } from "../actions/deposit";
+import { withdrawAction } from "../actions/withdraw";
 
-interface DepositModalProps {
+interface WithdrawModalProps {
   isOpen: boolean;
   accountId: string;
   onClose: () => void;
-  onDeposit: (transaction: DepositOutput) => void;
+  onWithdraw: (transaction: WithdrawOutput) => void;
 }
 
-export default function DepositModal({
+export default function WithdrawModal({
   isOpen,
   onClose,
-  onDeposit,
+  onWithdraw,
   accountId,
-}: Readonly<DepositModalProps>) {
+}: Readonly<WithdrawModalProps>) {
   const [form, _, onSubmit, isPending] = useHookFormState({
-    action: (data) => depositAction({ amount: data.amount, accountId }),
-    schema: depositInput.extend({
+    action: (data) => withdrawAction({ amount: data.amount, accountId }),
+    schema: withdrawInput.extend({
       amount: z.string(),
     }),
     onSuccess: (data) => {
       if (data) {
-        onDeposit(data);
+        onWithdraw(data);
         onClose();
       }
     },
@@ -40,7 +40,7 @@ export default function DepositModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <h2 className="text-xl font-bold text-slate-800 mb-4">Depósito</h2>
+      <h2 className="text-xl font-bold text-slate-800 mb-4">Saque</h2>
       <form onSubmit={onSubmit} className="space-y-4">
         <div>
           <ControlledInput
@@ -66,7 +66,7 @@ export default function DepositModal({
             {isPending ? (
               <Loader2Icon className="size-6 animate-spin" />
             ) : (
-              "Depositar"
+              "Sacar"
             )}
           </button>
         </div>

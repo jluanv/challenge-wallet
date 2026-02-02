@@ -4,12 +4,17 @@ import type {
   CreateAccountOutput,
   DepositOutput,
   ListAccountsOutput,
+  TransferOutput,
+  WithdrawOutput,
 } from "@finance/validations";
 import { useState } from "react";
 import { deleteAccountAction } from "../actions/delete-account";
+import AccountCard from "../components/account-card";
 import AccountModal from "../components/accounts-modal";
 import ConfirmModal from "../components/confirm-action-modal";
 import DepositModal from "../components/deposit-modal";
+import TransferModal from "../components/transfer-modal";
+import WithdrawModal from "../components/withdraw-modal";
 
 export default function AccountsClient({
   initialAccounts,
@@ -18,6 +23,9 @@ export default function AccountsClient({
   const [isOpen, setIsOpen] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isDeposit, setIsDeposit] = useState(false);
+  const [isWithdraw, setIsWithdraw] = useState(false);
+  const [isTransfer, setIsTransfer] = useState(false);
+
   const [id, setId] = useState<string | null>(null);
 
   const handleAccountAdded = (newAcc: CreateAccountOutput) => {
@@ -35,6 +43,50 @@ export default function AccountsClient({
       updatedAccounts[accountIndex] = {
         ...account,
         balance: account.balance + deposit.amount,
+      };
+      return updatedAccounts;
+    });
+  };
+
+  const handleWithdraw = (withdraw: WithdrawOutput) => {
+    setAccounts((prev) => {
+      const accountIndex = prev.findIndex(
+        (acc) => acc.id === withdraw.accountId,
+      );
+      if (accountIndex === -1) return prev;
+      const updatedAccounts = [...prev];
+      const account = updatedAccounts[accountIndex];
+      updatedAccounts[accountIndex] = {
+        ...account,
+        balance: account.balance - withdraw.amount,
+      };
+      return updatedAccounts;
+    });
+  };
+
+  const handleTransfer = (transfer: TransferOutput) => {
+    setAccounts((prev) => {
+      const accountFromIndex = prev.findIndex(
+        (acc) => acc.id === transfer.fromResult.id,
+      );
+
+      const accountResultIndex = prev.findIndex(
+        (acc) => acc.id === transfer.toResult.id,
+      );
+
+      if (accountFromIndex === -1) return prev;
+      const updatedAccounts = [...prev];
+      const account = updatedAccounts[accountFromIndex];
+      updatedAccounts[accountFromIndex] = {
+        ...account,
+        balance: transfer.fromResult.balance,
+      };
+
+      if (accountResultIndex === -1) return prev;
+      const accountResult = updatedAccounts[accountResultIndex];
+      updatedAccounts[accountResultIndex] = {
+        ...accountResult,
+        balance: transfer.toResult.balance,
       };
       return updatedAccounts;
     });
@@ -69,59 +121,15 @@ export default function AccountsClient({
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {accounts.map((acc) => (
-          <div
+          <AccountCard
             key={acc.id}
-            className={`bg-white shadow rounded-lg p-4 ${acc.isActive ? "" : "opacity-70"}`}
-          >
-            <h2 className="text-indigo-600 font-semibold">
-              {acc.name}
-              {!acc.isActive && (
-                <p className="text-xs text-red-500">(Inativa)</p>
-              )}
-            </h2>
-            <p className="text-slate-700">Saldo: R$ {acc.balance}</p>
-            <div className="flex gap-2 mt-3 flex-wrap">
-              {acc.balance > 0 && (
-                <button
-                  type="button"
-                  className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
-                >
-                  Transferir
-                </button>
-              )}
-              <button
-                type="button"
-                className="bg-purple-600 text-white px-3 py-1 rounded hover:bg-purple-700"
-                onClick={() => {
-                  setId(acc.id);
-                  setIsDeposit(true);
-                }}
-              >
-                Depositar
-              </button>
-
-              <button
-                type="button"
-                className="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
-              >
-                Editar
-              </button>
-              <button
-                type="button"
-                className={` text-white px-3 py-1 rounded ${
-                  acc.isActive
-                    ? "bg-red-600  hover:bg-red-700"
-                    : "bg-green-600 hover:bg-green-700"
-                }`}
-                onClick={() => {
-                  setId(acc.id);
-                  setIsDelete(true);
-                }}
-              >
-                {acc.isActive ? "Inativar" : "Ativar"}
-              </button>
-            </div>
-          </div>
+            acc={acc}
+            setId={setId}
+            setIsDelete={setIsDelete}
+            setIsDeposit={setIsDeposit}
+            setIsWithdraw={setIsWithdraw}
+            setIsTransfer={setIsTransfer}
+          />
         ))}
       </div>
 
@@ -148,6 +156,25 @@ export default function AccountsClient({
           accountId={id}
           onClose={() => setIsDeposit(false)}
           onDeposit={(data) => handleDeposit(data)}
+        />
+      )}
+
+      {isWithdraw && id && (
+        <WithdrawModal
+          isOpen={isWithdraw}
+          accountId={id}
+          onClose={() => setIsWithdraw(false)}
+          onWithdraw={(data) => handleWithdraw(data)}
+        />
+      )}
+
+      {isTransfer && id && (
+        <TransferModal
+          isOpen={isTransfer}
+          accounts={accounts}
+          onClose={() => setIsTransfer(false)}
+          accountId={id}
+          onTransfer={(data) => handleTransfer(data)}
         />
       )}
     </div>

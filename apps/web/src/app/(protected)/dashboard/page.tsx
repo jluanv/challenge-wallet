@@ -61,10 +61,12 @@ export default async function DashboardPage() {
                 </span>
                 <span
                   className={`font-semibold ${
-                    transaction.amount >= 0 ? "text-green-600" : "text-red-600"
+                    transaction.type === "Depósito"
+                      ? "text-green-600"
+                      : "text-red-600"
                   }`}
                 >
-                  {transaction.amount >= 0
+                  {transaction.type === "Depósito"
                     ? `+R$ ${transaction.amount.toFixed(2)}`
                     : `-R$ ${Math.abs(transaction.amount).toFixed(2)}`}
                 </span>

@@ -1,10 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { TransactionType } from "prisma/generated/enums";
+import { transactionTypeTranslate } from "src/utils/transaction-translate";
 import {
   BadRequestError,
   NotFoundError,
 } from "../common/exceptions/http-exception.util";
 import { PrismaService } from "../prisma/prisma.service";
 import { DepositDto } from "./dto/deposit.dto";
+import type { ListTransactionsQueryDto, TransactionItemDto } from "./dto/list";
 import { ReverseDto } from "./dto/reverse.dto";
 import { TransferDto } from "./dto/transfer.dto";
 import { WithdrawDto } from "./dto/withdraw.dto";
@@ -12,6 +15,47 @@ import { WithdrawDto } from "./dto/withdraw.dto";
 @Injectable()
 export class TransactionsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  async findAll(userId: string, query: ListTransactionsQueryDto) {
+    const { type } = query;
+
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
+
+    const where: any = { userId };
+    if (type) {
+      where.type = type;
+    }
+
+    const [transactions, total] = await this.prisma.$transaction([
+      this.prisma.transaction.findMany({
+        where,
+        skip: (page - 1) * limit,
+        take: limit,
+        orderBy: { createdAt: "desc" },
+        include: {
+          account: true,
+        },
+      }),
+      this.prisma.transaction.count({ where }),
+    ]);
+
+    return {
+      data: transactions.map((t) => ({
+        id: t.id,
+        amount: t.amount,
+        type: transactionTypeTranslate[t.type],
+        accountName: t.account.name,
+        createdAt: t.createdAt,
+      })) as TransactionItemDto[],
+      params: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
 
   async deposit(userId: string, dto: DepositDto) {
     return this.prisma.$transaction(async (tx) => {
@@ -115,30 +159,30 @@ export class TransactionsService {
         data: [
           {
             amount: dto.amount,
-            type: "EXPENSE",
+            type: TransactionType.TRANSFER,
             accountId: from.id,
             userId: from.userId,
           },
           {
             amount: dto.amount,
-            type: "INCOME",
+            type: TransactionType.INCOME,
             accountId: to.id,
             userId: to.userId,
           },
         ],
       });
 
-      await tx.account.update({
+      const fromResult = await tx.account.update({
         where: { id: from.id },
         data: { balance: from.balance - dto.amount },
       });
 
-      await tx.account.update({
+      const toResult = await tx.account.update({
         where: { id: to.id },
         data: { balance: to.balance + dto.amount },
       });
 
-      return { success: true };
+      return { fromResult, toResult };
     });
   }
 

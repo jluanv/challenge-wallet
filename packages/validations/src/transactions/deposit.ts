@@ -20,3 +20,5 @@ export const depositOutput = z.object({
 export type DepositInput = z.infer<typeof depositInput>;
 
 export type DepositOutput = z.infer<typeof depositOutput>;
+
+export type TransactionType = z.infer<typeof transactionTypeSchema>;
