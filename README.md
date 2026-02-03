@@ -6,7 +6,8 @@ contendo:
 
 ---  ## 📦 Pré-requisitos  
 - [Node.js 20+](https://nodejs.org/)   
-- [pnpm](https://pnpm.io/) instalado globalmente:   ```bash   npm install -g pnpm
+- [pnpm](https://pnpm.io/) instalado globalmente:   
+```bash   npm install -g pnpm```
 
 Criar na raiz:
 - **.env**
