@@ -15,8 +15,8 @@
     "migrate:all": "pnpm migrate:dev && pnpm migrate:test",
     "seed": "ts-node prisma/seed.ts",
     "test": "jest",
-    "test:unit": "jest --testMatch '**/*.test.ts'",
-    "test:integration": "cross-env NODE_ENV=test dotenv -e .env.test.local jest --testMatch '**/*.spec.ts'"
+    "test:unit": "jest --selectProjects unit",
+    "test:integration": "dotenv -e .env.test.local -- jest --selectProjects integration"
   },
   "dependencies": {
     "@anatine/zod-nestjs": "^2.0.12",
@@ -71,26 +71,23 @@
     "typescript-eslint": "^8.20.0"
   },
   "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testMatch": [
-      "**/*.test.ts",
-      "**/*.spec.ts"
-    ],
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "setupFiles": [
-      "<rootDir>/test/jest.setup.ts"
+    "projects": [
+      {
+        "displayName": "unit",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+          "<rootDir>/src/**/*.unit.spec.ts"
+        ]
+      },
+      {
+        "displayName": "integration",
+        "preset": "ts-jest",
+        "testEnvironment": "node",
+        "testMatch": [
+          "<rootDir>/src/**/*.integration.spec.ts"
+        ]
+      }
     ]
   }
 }
