@@ -75,6 +75,7 @@ describe("TransactionsService (integration)", () => {
     expect(acc?.balance).toBe(100);
 
     const txs = await prisma.transaction.findMany();
+    expect(txs.length).toBe(1);
     expect(txs[0].type).toBe("INCOME");
   });
 
@@ -90,6 +91,7 @@ describe("TransactionsService (integration)", () => {
 
     const txs = await prisma.transaction.findMany();
     expect(txs.length).toBe(2);
+    expect(txs[1].type).toBe("EXPENSE");
   });
 
   it("should transfer between accounts", async () => {
@@ -114,6 +116,8 @@ describe("TransactionsService (integration)", () => {
 
     const txs = await prisma.transaction.findMany();
     expect(txs.length).toBe(3);
+    expect(txs.some((t) => t.type === "TRANSFER")).toBe(true);
+    expect(txs.some((t) => t.type === "INCOME")).toBe(true);
   });
 
   it("should reverse a transaction", async () => {
@@ -134,6 +138,7 @@ describe("TransactionsService (integration)", () => {
 
     const txs = await prisma.transaction.findMany();
     expect(txs.length).toBe(2);
-    expect(txs[1].type).toBe("INCOME");
+
+    expect(txs[0].type).toBe("EXPENSE");
   });
 });

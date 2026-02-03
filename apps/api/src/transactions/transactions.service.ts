@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
-import { TransactionType } from "prisma/generated/enums";
-import { transactionTypeTranslate } from "src/utils/transaction-translate";
+import { TransactionType } from "../../prisma/generated/enums";
 import {
   BadRequestError,
   NotFoundError,
 } from "../common/exceptions/http-exception.util";
 import { PrismaService } from "../prisma/prisma.service";
+import { transactionTypeTranslate } from "../utils/transaction-translate";
 import { DepositDto } from "./dto/deposit.dto";
 import type { ListTransactionsQueryDto, TransactionItemDto } from "./dto/list";
 import { ReverseDto } from "./dto/reverse.dto";

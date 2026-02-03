@@ -20,6 +20,9 @@ describe("TransactionsService (unit)", () => {
         update: jest.fn(),
       },
       $transaction: jest.fn((fn) => fn(prismaMock)),
+      user: {
+        findUnique: jest.fn(),
+      },
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -57,6 +60,12 @@ describe("TransactionsService (unit)", () => {
   });
 
   it("should withdraw and decrease balance", async () => {
+    prismaMock.user.findUnique.mockResolvedValue({
+      id: "user1",
+      creditLimit: 100,
+      accounts: [{ id: "acc1", balance: 200 }],
+    });
+
     prismaMock.account.findFirst.mockResolvedValue({
       id: "acc1",
       balance: 100,
@@ -89,6 +98,12 @@ describe("TransactionsService (unit)", () => {
   });
 
   it("should transfer between accounts", async () => {
+    prismaMock.user.findUnique.mockResolvedValue({
+      id: "user1",
+      creditLimit: 100,
+      accounts: [{ id: "acc1", balance: 200 }],
+    });
+
     prismaMock.account.findUnique
       .mockResolvedValueOnce({ id: "acc1", balance: 200, userId: "user1" })
       .mockResolvedValueOnce({ id: "acc2", balance: 50, userId: "user2" });

@@ -8,12 +8,15 @@
   "scripts": {
     "build": "pnpm exec nest build",
     "start": "nest start",
-    "start:dev": "nest start --watch",
-    "prisma:generate": "pnpm prisma generate",
-    "prisma:deploy": "pnpm prisma migrate deploy",
+    "dev": "nest start --watch",
+    "prisma:generate": "prisma generate",
+    "migrate:dev": "dotenv -e .env -- prisma migrate deploy",
+    "migrate:test": "dotenv -e .env.test.local -- prisma migrate deploy",
+    "migrate:all": "pnpm migrate:dev && pnpm migrate:test",
     "seed": "ts-node prisma/seed.ts",
     "test": "jest",
-    "test:integration": "cross-env NODE_ENV=test dotenv -e .env.test jest --testMatch '**/*.spec.ts'"
+    "test:unit": "jest --testMatch '**/*.test.ts'",
+    "test:integration": "cross-env NODE_ENV=test dotenv -e .env.test.local jest --testMatch '**/*.spec.ts'"
   },
   "dependencies": {
     "@anatine/zod-nestjs": "^2.0.12",
