@@ -35,7 +35,14 @@ Isso vai:
 
 Subir o banco Postgres com os bancos finance_wallet e finance_test.
 
-4. Rodar em modo desenvolvimento
+4. Rodar a seed para criar o usuário
+Na raiz do projeto:
+pnpm --filter apps/api seed 
+    **ou:** 
+cd apps/api
+pnpm seed
+
+5. Rodar em modo desenvolvimento
 Na raiz do projeto:
 pnpm run dev
 
